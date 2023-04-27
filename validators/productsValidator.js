@@ -1,10 +1,10 @@
 const joi = require("joi");
 
 const productSchema = joi.object({
-	prodyctName: joi.string().required(),
+	productName: joi.string().required(),
 	brand: joi.string().required(),
 	category: joi.string().required(),
-	price: joi.string().replace(),
+	price: joi.number().required(),
 	discription: joi.string().required(),
     inStock: joi.number().required()
 });

@@ -4,7 +4,7 @@ require("dotenv").config();
 const cors = require('cors')
 const userRoutes = require('./routes/user')
 const productRoutes = require('./routes/products')
-
+const wishlistRoutes = require('./routes/wishList')
 
 
 app = express()
@@ -35,7 +35,7 @@ process.on('uncaughtException', error => {
 
 app.use('/api/v1',userRoutes)
 app.use('/api/v1',productRoutes)
-
+app.use('/api/v1',wishlistRoutes)
 
 const port = process.env.PORT
 

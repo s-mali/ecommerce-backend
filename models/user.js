@@ -46,7 +46,14 @@ const userSchema = new mongoose.Schema({
 
     modifiedDate:{
         type: Date
-    }
+    },
+
+    wishList: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'product'
+        }
+    ]
 })
 
 module.exports = mongoose.model('user', userSchema)
