@@ -2,14 +2,16 @@ const Product = require('../models/products')
 
 exports.addProduct = async (req, res)=>{
     try{
+
+        let body = JSON.parse(JSON.stringify(req.body));
         var product = new Product({
-            productName : req.body.productName,
-            brand : req.body.brand,
-            inStock : req.body.inStock,
-            discription: req.body.discription,
-            price : req.body.price,
-            category : req.body.category,
-            productImage : req.body.productImage
+            productName : body.productName,
+            brand : body.brand,
+            inStock :body.inStock,
+            discription: body.discription,
+            price : body.price,
+            category : body.category,
+            productImage : req.imageUrl
         })
 
         await product.save();
@@ -60,9 +62,16 @@ exports.deleteProduct = async (req,res)=>{
 
 exports.updateProduct = async (req, res) => {
     try {
-        let id =  req.params.productId
+
+        let body = JSON.parse(JSON.stringify(req.body));
+
+        let id =  req.params.productId 
         let modifiedDate = new Date()
-        let updatedData = req.body
+        let updatedData = body
+        
+        if(req.imageUrl){
+            updatedData['productImage'] = req.imageUrl
+        }
 
         updatedData = { ...updatedData, modifiedDate }
         
@@ -104,3 +113,36 @@ exports.getProduct = async(req,res) => {
         res.status(401).json({message : 'Product Not Found'});
     }
 }
+
+// exports.uploadImages = async (req, res) => {
+//     try {
+//         if (req.imageUrls) {
+//             const productId = req.params.productId
+
+//             const updated = await Product.updateOne(
+//                 { _id: productId },
+//                 {
+//                     $push: {
+//                       images: {
+//                         $each: req.imageUrls
+//                       }
+//                     }
+//                 }
+//             )
+//             console.log("====>>>",updated);
+//             if(updated){
+//                 var images = req.imageUrls
+//                 res.status(201).json({images, message: 'Added images to product' })
+//             }else{
+//                 res.status(400).json({ message: 'Error at Uploading Images' })
+//             }
+
+//         } else {
+//             res.status(401).json({ message: 'Product Not Found' });
+//         }
+
+//     } catch (err) {
+//         console.log(err);
+//         res.status(401).json({ message: 'Product Not Found' });
+//     }
+// }
