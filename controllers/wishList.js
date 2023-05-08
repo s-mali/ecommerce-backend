@@ -5,6 +5,11 @@ exports.addUserWishList = async (req, res) => {
 
     try {
         const user = req.user
+
+        if(user.wishList.includes(req.body.productId)){
+            return res.status(401).json({ message: 'Already in your wishList'})
+
+        }
         user.wishList = [...user.wishList, req.body.productId]
 
         const wishList = await User.updateOne({ _id: user._id },

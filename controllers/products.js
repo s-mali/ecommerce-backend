@@ -75,14 +75,14 @@ exports.updateProduct = async (req, res) => {
 
         updatedData = { ...updatedData, modifiedDate }
         
-        const result = await Product.updateOne({ _id : id },
-            {
-                $set: updatedData
-                    
-            })
-
+        const result = await Product.findOneAndUpdate(
+            { _id : id },
+            {$set: updatedData},
+            { new: true } 
+            )
+        
         if(result){
-            res.status(200).json(updatedData)
+            res.status(200).json(result)
         }
         else{
             res.status(401).json({message : 'Product Not Found'});
