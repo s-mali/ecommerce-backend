@@ -23,6 +23,17 @@ const userSchema = new mongoose.Schema({
         }
 
     },
+    userImage :{
+        type: String
+    },
+
+    phone:{
+        type:String
+    },
+
+    dob:{
+        type:Date
+    },
 
     role: {
         type: String,

@@ -50,7 +50,8 @@ exports.login = async (req, res) => {
                 lastName: req.body.family_name,
                 email: req.body.email,
                 role: 'user',
-                socialLogin: true
+                socialLogin: true,
+                userImage: req.body.picture
             });
 
             await user.save();
@@ -146,5 +147,97 @@ exports.login = async (req, res) => {
                 accessToken: token,
             });
     }
+
+}
+
+exports.getUser = async (req, res) => {
+    try {
+        const id = req.user._id
+        
+        var user = await User.findOne(
+            { _id: id },
+            {
+                password: 0,
+                wishList: 0,
+                socialLogin: 0,
+                role: 0
+            }
+
+        )
+
+        if (user) {
+            return res.status(200).json(user)
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ message: 'User not found' })
+
+    }
+}
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const id = req.user._id
+        let modifiedDate = new Date()
+
+        updatedData = req.body
+
+
+        updatedData = { ...updatedData, modifiedDate }
+
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: id },
+            { $set: updatedData },
+            { 
+                new: true,
+                projection: { password: 0, wishList: 0, socialLogin: 0, role: 0 } 
+            },
+           
+        )
+
+        if (updatedUser) {
+            res.status(200).json(updatedUser)
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ message: 'Error at updating profile' })
+    }
+}
+
+exports.uploadProfileImage = async (req, res) => {
+
+    try {
+        const id = req.user._id
+        let updatedData = {}
+        let modifiedDate = new Date()
+
+        if (req.imageUrl) {
+            updatedData['userImage'] = req.imageUrl
+            updatedData = { ...updatedData, modifiedDate }
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: id },
+                { $set: updatedData },
+                { 
+                    new: true,
+                    projection: { password: 0, wishList: 0, socialLogin: 0, role: 0 }  
+                }
+            )
+
+            if (updatedUser) {
+                res.status(200).json(updatedUser)
+            }
+        }
+        else {
+            res.status(400).json({ message: 'Error at uploading profile Image' })
+        }
+
+    }
+    catch (err) {
+        console.log(err)
+        res.status(400).json({ message: 'Error at uploading profile Image' })
+    }
+
 
 }
