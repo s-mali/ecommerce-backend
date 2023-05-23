@@ -1,3 +1,4 @@
+const { response } = require('express');
 const Product = require('../models/products')
 
 exports.addProduct = async (req, res)=>{
@@ -114,35 +115,22 @@ exports.getProduct = async(req,res) => {
     }
 }
 
-// exports.uploadImages = async (req, res) => {
-//     try {
-//         if (req.imageUrls) {
-//             const productId = req.params.productId
+exports.filterProducts = async(req,res) => {
+    try{
+        const { name , categories} = req.body
 
-//             const updated = await Product.updateOne(
-//                 { _id: productId },
-//                 {
-//                     $push: {
-//                       images: {
-//                         $each: req.imageUrls
-//                       }
-//                     }
-//                 }
-//             )
-//             console.log("====>>>",updated);
-//             if(updated){
-//                 var images = req.imageUrls
-//                 res.status(201).json({images, message: 'Added images to product' })
-//             }else{
-//                 res.status(400).json({ message: 'Error at Uploading Images' })
-//             }
+        var result = await Product.aggregate([
+            {
+                $match: {
+                  category: { $in: categories }
+                }
+              }
+        ]) .exec()
 
-//         } else {
-//             res.status(401).json({ message: 'Product Not Found' });
-//         }
+        res.status(201).json(result)
 
-//     } catch (err) {
-//         console.log(err);
-//         res.status(401).json({ message: 'Product Not Found' });
-//     }
-// }
+    }catch(err){
+        console.log(err)
+        res.status(400).json({message : 'Products Not Found'});
+    }
+}

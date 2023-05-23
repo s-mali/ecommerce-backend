@@ -13,6 +13,7 @@ router.get('/getProducts', Product.getProductList);
 router.get('/deleteProduct/:productId', Product.deleteProduct);
 router.post('/updateProduct/:productId', upload.upload.single('image'), uploadImages, Product.updateProduct)
 router.get('/getProduct/:productId', Product.getProduct)
+router.post('/filterProducts', Product.filterProducts)
 
 router.patch('/uploadImages/:productId',  );
 

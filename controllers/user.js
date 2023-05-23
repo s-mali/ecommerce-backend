@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken");
 const User = require('../models/user')
+const axios = require('axios')
+const IP = require('ip');
 
 exports.signUp = async (req, res) => {
 
@@ -164,7 +166,16 @@ exports.getUser = async (req, res) => {
             }
 
         )
+        user = user.toObject()
+        const ipResponse = await axios.get('https://api.ipify.org/?format=json')
+        const ip = ipResponse.data.ip
 
+        const response = await axios.get(`https://ipgeolocation.abstractapi.com/v1/?api_key=${process.env.ABSTRACT_API_KEY}&ip_address=${ip}`)
+        user.location = {  city : response.data.city,
+                            region : response.data.region,
+                            country : response.data.country
+                         }
+        
         if (user) {
             return res.status(200).json(user)
         }
